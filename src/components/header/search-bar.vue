@@ -60,7 +60,7 @@ export default class SearchBar extends Vue {
       document.getElementById("search")?.focus();
     });
     window.addEventListener("click", (e) => {
-      if (!this.$el.contains(e.target)) {
+      if (!this.$el.contains(<Node>(e!.target))) {
         this.showSearchResult = false;
       }
     });
