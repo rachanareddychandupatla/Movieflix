@@ -70,7 +70,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import { Component, Vue, Watch } from "vue-property-decorator";
 import Cast from "@/components/movies/cast.vue";
 import Images from "@/components/movies/images.vue";
 import { HTTP } from "../../services/api";
@@ -91,6 +91,7 @@ export default class Movie extends Vue {
   async mounted() {
     await this.fetchMovieDataFromId(this.$route.params.id);
   }
+
   async fetchMovieDataFromId(movieId: string) {
     const result = await HTTP.get(
       `/movie/${movieId}?append_to_response=credits,videos,images`
@@ -113,6 +114,13 @@ export default class Movie extends Vue {
     this.mediaURL = imageFullPath;
     this.isVideo = false;
     this.isOpened = true;
+  }
+
+  @Watch("$route.fullPath")
+  private onPathChange(oldPath: String, newPath: String) {
+    if (oldPath !== newPath) {
+      this.fetchMovieDataFromId(this.$route.params.id);
+    }
   }
 
   public get moviePoster(): String {
